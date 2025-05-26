@@ -19,7 +19,7 @@ const ExpenseTracking = () => {
         setExpenses([]);
         return;
       }
-      const response = await axios.get('http://localhost:5000/api/expenses', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/expenses`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setExpenses(Array.isArray(response.data) ? response.data : []);
@@ -53,7 +53,7 @@ const ExpenseTracking = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/expenses', newExpense, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/expenses`, newExpense, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Refetch expenses after adding

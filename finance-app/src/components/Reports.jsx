@@ -22,12 +22,12 @@ const Reports = () => {
       try {
         const token = localStorage.getItem('token');
         // Fetch expenses
-        const expRes = await axios.get('http://localhost:5000/api/expenses', {
+        const expRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/expenses`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setExpenses(Array.isArray(expRes.data) ? expRes.data : []);
         // Fetch budgets
-        const budRes = await axios.get('http://localhost:5000/api/budget', {
+        const budRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/budget`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const budgets = budRes.data;

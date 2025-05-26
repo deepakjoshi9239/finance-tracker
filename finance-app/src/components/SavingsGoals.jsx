@@ -13,7 +13,7 @@ const SavingsGoals = () => {
     const fetchGoals = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/api/savings-goals', {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/savings-goals`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setGoals(res.data);
@@ -35,7 +35,7 @@ const SavingsGoals = () => {
     }
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:5000/api/savings-goals', {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/savings-goals`, {
         name: goalName,
         amount: parseFloat(goalAmount)
       }, {
@@ -56,7 +56,7 @@ const SavingsGoals = () => {
     setSuccess('');
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/savings-goals/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/api/savings-goals/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setGoals(goals.filter(goal => goal._id !== id));
