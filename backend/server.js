@@ -1,13 +1,13 @@
 // backend/server.js
 
-const express = require('express');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const expenseRoute = require('./routes/expenseRoute');
-const budgetRoute = require('./routes/budgetRoute');
-const authRoute = require('./routes/authRoute');
-const savingsGoalRoute = require('./routes/savingsGoalRoute');
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const expenseRoute = require("./routes/expenseRoute");
+const budgetRoute = require("./routes/budgetRoute");
+const authRoute = require("./routes/authRoute");
+const savingsGoalRoute = require("./routes/savingsGoalRoute");
 
 dotenv.config();
 
@@ -17,20 +17,27 @@ const app = express();
 app.use(express.json());
 app.use(cors()); // Enable Cross-Origin Resource Sharing
 
+app.get("/api/health-check", (req, res) => {
+  res.status(200).json({ message: "Server Up and running" });
+});
+
 // Use the routes
-app.use('/api/expenses', expenseRoute); // For expense-related endpoints
-app.use('/api/auth', authRoute);
-app.use('/api/budget', budgetRoute); // For budget-related endpoints
-app.use('/api/savings-goals', savingsGoalRoute);
+app.use("/api/expenses", expenseRoute); // For expense-related endpoints
+app.use("/api/auth", authRoute);
+app.use("/api/budget", budgetRoute); // For budget-related endpoints
+app.use("/api/savings-goals", savingsGoalRoute);
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log("Connected to MongoDB");
   })
   .catch((err) => {
-    console.error('Error connecting to MongoDB:', err.message);
+    console.error("Error connecting to MongoDB:", err.message);
   });
 
 // Start the server
