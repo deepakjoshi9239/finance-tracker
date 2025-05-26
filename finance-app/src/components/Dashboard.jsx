@@ -16,7 +16,7 @@ function Dashboard() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     // Fetch budgets
-    axios.get(`${process.env.REACT_APP_API_URL}/api/budget`, {
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/budget`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
@@ -28,7 +28,7 @@ function Dashboard() {
       .catch(() => setError('Failed to fetch budget'));
 
     // Fetch expenses
-    axios.get(`${process.env.REACT_APP_API_URL}/api/expenses`, {
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/expenses`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => setExpenses(Array.isArray(res.data) ? res.data : []))

@@ -16,7 +16,7 @@ function Budgeting() {
     const fetchBudget = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/budget`, {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/budget`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         // Handle array response, use the latest budget if available
@@ -70,7 +70,7 @@ function Budgeting() {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/budget`, budgetData, {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/budget`, budgetData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
