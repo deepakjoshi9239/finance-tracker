@@ -9,9 +9,14 @@ const router = express.Router();
 router.use(authenticateUser);
 
 // **Create a Budget**
+// **Create a Budget**
 router.post('/', async (req, res) => {
-  const { income, rent, food, entertainment, utilities, transportation } = req.body;
+  const { income, rent, food, entertainment, utilities, transportation, month } = req.body; // <-- Add month
   const userId = req.user.userId;
+
+  if (!income || !month) {
+    return res.status(400).json({ message: 'Income and month are required' });
+  }
 
   try {
     const newBudget = new Budget({
@@ -21,11 +26,12 @@ router.post('/', async (req, res) => {
       entertainment,
       utilities,
       transportation,
+      month, // <-- Save month
       userId,
     });
 
     const savedBudget = await newBudget.save();
-    res.status(201).json(savedBudget); // Frontend expects the created budget object
+    res.status(201).json(savedBudget);
   } catch (error) {
     console.error('Error creating budget:', error);
     res.status(500).json({ message: 'Error creating budget', error: error.message });

@@ -10,6 +10,13 @@ const ExpenseTracking = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Edit states
+  const [editingId, setEditingId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editAmount, setEditAmount] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [editDate, setEditDate] = useState('');
+
   // Fetch expenses from the backend
   const fetchExpenses = async () => {
     try {
@@ -72,6 +79,62 @@ const ExpenseTracking = () => {
       );
       setSuccessMessage('');
     }
+  };
+
+  // Delete an expense
+  const handleDelete = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/expenses/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      await fetchExpenses();
+      setSuccessMessage('Expense deleted successfully!');
+      setErrorMessage('');
+    } catch (error) {
+      setErrorMessage('Failed to delete expense.');
+      setSuccessMessage('');
+    }
+  };
+
+  // Start editing an expense
+  const startEdit = (expense) => {
+    setEditingId(expense._id);
+    setEditName(expense.description);
+    setEditAmount(expense.amount);
+    setEditCategory(expense.category);
+    setEditDate(expense.date?.slice(0, 10));
+  };
+
+  // Save edited expense
+  const handleEdit = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/expenses/${id}`, {
+        description: editName,
+        amount: parseFloat(editAmount),
+        category: editCategory,
+        date: editDate,
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      await fetchExpenses();
+      setEditingId(null);
+      setSuccessMessage('Expense updated successfully!');
+      setErrorMessage('');
+    } catch (error) {
+      setErrorMessage('Failed to update expense.');
+      setSuccessMessage('');
+    }
+  };
+
+  // Cancel editing
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditName('');
+    setEditAmount('');
+    setEditCategory('');
+    setEditDate('');
   };
 
   // Calculate total expenses
@@ -155,10 +218,67 @@ const ExpenseTracking = () => {
             {expenses.map((expense) => (
               <li
                 key={expense._id}
-                className="py-4 flex justify-between items-center hover:bg-gray-100 px-4 rounded-lg transition duration-300"
+                className="py-4 flex flex-col md:flex-row md:justify-between md:items-center hover:bg-gray-100 px-4 rounded-lg transition duration-300"
               >
-                <span>{expense.description}</span>
-                <span className="text-green-600 font-semibold">${expense.amount?.toFixed(2)}</span>
+                {editingId === expense._id ? (
+                  <div className="flex flex-col md:flex-row md:items-center w-full gap-2">
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      className="border rounded px-2 mr-2 mb-2 md:mb-0"
+                    />
+                    <input
+                      type="number"
+                      value={editAmount}
+                      onChange={(e) => setEditAmount(e.target.value)}
+                      className="border rounded px-2 mr-2 mb-2 md:mb-0"
+                    />
+                    <input
+                      type="text"
+                      value={editCategory}
+                      onChange={(e) => setEditCategory(e.target.value)}
+                      className="border rounded px-2 mr-2 mb-2 md:mb-0"
+                    />
+                    <input
+                      type="date"
+                      value={editDate}
+                      onChange={(e) => setEditDate(e.target.value)}
+                      className="border rounded px-2 mr-2 mb-2 md:mb-0"
+                    />
+                    <button
+                      onClick={() => handleEdit(expense._id)}
+                      className="text-green-600 hover:underline mr-2"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      className="text-gray-600 hover:underline"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col md:flex-row md:items-center w-full gap-2">
+                    <span className="flex-1">{expense.description}</span>
+                    <span className="flex-1 text-green-600 font-semibold">${expense.amount?.toFixed(2)}</span>
+                    <span className="flex-1">{expense.category}</span>
+                    <span className="flex-1">{expense.date?.slice(0, 10)}</span>
+                    <button
+                      onClick={() => startEdit(expense)}
+                      className="ml-2 text-blue-600 hover:underline"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(expense._id)}
+                      className="ml-2 text-red-600 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

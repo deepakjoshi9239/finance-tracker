@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const monthsArr = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+
 function Budgeting() {
   const [income, setIncome] = useState('');
   const [rent, setRent] = useState('');
@@ -8,6 +13,7 @@ function Budgeting() {
   const [entertainment, setEntertainment] = useState('');
   const [utilities, setUtilities] = useState('');
   const [transportation, setTransportation] = useState('');
+  const [month, setMonth] = useState('');
   const [budgetSummary, setBudgetSummary] = useState(null);
   const [error, setError] = useState('');
 
@@ -29,6 +35,7 @@ function Budgeting() {
           setEntertainment(latest.entertainment);
           setUtilities(latest.utilities);
           setTransportation(latest.transportation);
+          setMonth(latest.month || '');
           setBudgetSummary({
             ...latest,
             totalExpenses:
@@ -66,6 +73,7 @@ function Budgeting() {
       entertainment: parseFloat(entertainment) || 0,
       utilities: parseFloat(utilities) || 0,
       transportation: parseFloat(transportation) || 0,
+      month,
     };
 
     try {
@@ -93,6 +101,15 @@ function Budgeting() {
             (latest.transportation || 0)),
       });
 
+      // Clear the form fields after successful submit
+      setIncome('');
+      setRent('');
+      setFood('');
+      setEntertainment('');
+      setUtilities('');
+      setTransportation('');
+      setMonth('');
+
       setError('');
     } catch (err) {
       const errorMessage =
@@ -111,6 +128,22 @@ function Budgeting() {
       {error && <div className="text-red-500 text-center mb-4">{error}</div>}
 
       <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
+        {/* Month Selector */}
+        <div>
+          <label className="block mb-1 font-semibold">Month</label>
+          <select
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+            className="border border-gray-300 rounded-md p-2 w-full focus:ring-2 focus:ring-blue-300"
+            required
+          >
+            <option value="">Select Month</option>
+            {monthsArr.map(m => (
+              <option key={m} value={m}>{m}</option>
+            ))}
+          </select>
+        </div>
+
         {/* Income Input */}
         <div>
           <label className="block mb-1 font-semibold">Income</label>

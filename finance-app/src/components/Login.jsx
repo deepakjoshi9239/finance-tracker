@@ -37,6 +37,7 @@ const Login = () => {
     } catch (error) {
       console.error('Error:', error);
       setError('An error occurred. Please try again.');
+      console.log("an error is occured at this place")
     }
   };
 

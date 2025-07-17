@@ -1,13 +1,14 @@
 const mongoose = require('mongoose');
 
-const budgetSchema = new mongoose.Schema({
-    income: { type: Number, required: true },
-    rent: { type: Number, required: true },
-    food: { type: Number, required: true },
-    entertainment: { type: Number, required: true },
-    utilities: { type: Number, required: true },
-    transportation: { type: Number, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Link to User
-});
+const BudgetSchema = new mongoose.Schema({
+  income: { type: Number, required: true },
+  rent: Number,
+  food: Number,
+  entertainment: Number,
+  utilities: Number,
+  transportation: Number,
+  month: { type: String, required: true }, // <-- Add this line
+  userId: { type: String, required: true },
+}, { timestamps: true });
 
-module.exports = mongoose.model('Budget', budgetSchema);
+module.exports = mongoose.model('Budget', BudgetSchema);
